@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chicken Catcher</title>
+    <style>
+        /*游戏logo样式*/
+        h1 img{ height: 2em; 
+        /*游戏框设置*/    
+        vertical-align: middle; }
+        #game-container {
+            position: relative;
+            width: 1460px;
+            height: 500px;
+            border: 1px solid rgb(255, 174, 0);
+            border-radius: 30px;
+            background-image: url(game/草地2.jpg);
+            background-size: cover; 
+            background-repeat: no-repeat;
+            margin: auto;}
+        /*小鸡图标样式*/
+        .chicken {
+            position: absolute;
+            width: 150px;
+            height:150px; 
+            transition: top 1s, left 1s;
+            background-image: url(game/小鸡.gif);
+            background-size: cover;}
+         /*得分表样式设计*/
+        #score-display{text-align: center;
+            font-size: 2em; 
+            color: #FF6347;
+            background-color: #F0F8FF; 
+            border: 2px solid #20B2AA; 
+            padding: 10px; 
+            border-radius: 10px; 
+            width: 200px; 
+            margin: 20px auto; }
+       
+        #controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;}
+        /*鸭子图标样式*/
+        .duck {
+    position: absolute;
+    width: 150px;
+    height:150px;
+    transition: top 1s, left 1s;
+    background-image: url(game/鸭子.gif);
+    background-size: cover;
+}
+        /*重置按钮样式*/
+        #reset-button {
+    text-align: center;
+    font-size: 2em;
+    color: #FF6347;
+    background-color: #F0F8FF;
+    border: 2px solid #20B2AA;
+    padding: 10px;
+    border-radius: 10px;
+    width: 200px; 
+    margin: 20px auto; 
+    cursor: pointer;}
+        /*页面样式*/
+        body {padding: 20px;
+    margin: 0;
+background-image: url(game/草地3.png);
+background-repeat:repeat-x;
+background-position: bottom; }
+        /*图标移动样式*/
+        @keyframes movechicken {
+    0% { top: 0; left: 0; }
+    100% { top: var(--random-top); left: var(--random-left); }}
+    </style>
+
+    <script>
+        
+    var gameContainer;
+    var score = 0;
+
+    function createChicken() {
+    var chicken = document.createElement("div");
+    chicken.className = "chicken";
+    var top = Math.random() * (gameContainer.offsetHeight - 150); 
+    var left = Math.random() * (gameContainer.offsetWidth - 150); 
+    chicken.style.top = top + "px";
+    chicken.style.left = left + "px";
+    chicken.addEventListener("click", catchChicken);
+    gameContainer.appendChild(chicken);
+
+    setInterval(function() {
+    var dx = (Math.random() * 2 - 1) * 200;
+    var dy = (Math.random() * 2 - 1) * 200; 
+    var top = chicken.offsetTop + dy;
+    var left = chicken.offsetLeft + dx;
+    if (top >= 0 && top <= gameContainer.offsetHeight - 150) {
+        chicken.style.top = top + "px";
+    }
+    if (left >= 0 && left <= gameContainer.offsetWidth - 150) {
+        chicken.style.left = left + "px";
+    }}, 500);
+    setTimeout(function() {
+        if (document.body.contains(chicken)) {
+            chicken.remove();
+        }
+    }, 2000);
+}
+    function startGame() {
+        gameContainer = document.getElementById("game-container");
+        setInterval(createChicken, 1000);
+        setInterval(createDuck, 2000);
+    }
+    window.onload = startGame;
+    function catchChicken() {
+    this.style.backgroundImage = "url(game/小鸡被抓.gif)";
+    var self = this;
+    setTimeout(function() {
+        self.remove();
+    }, 500); 
+    score++;
+    document.getElementById('score-display').innerText = "Score: " + score;
+    if (score === 10) {
+        alert("恭喜你获得新的称号‘捉鸡侠’！");
+    }
+    if (score === 50) {
+        alert("恭喜你获得新的称号‘捉鸡王’！");
+    }    
+}
+function resetGame() {
+    gameContainer.innerHTML = '';
+    score = 0;
+    document.getElementById('score-display').innerText = "Score: " + score;
+}
+
+function createDuck() {
+    var duck = document.createElement("div");
+    duck.className = "duck";
+    var top = Math.random() * (gameContainer.offsetHeight - 150);
+    var left = Math.random() * (gameContainer.offsetWidth - 150);
+    duck.style.top = top + "px";
+    duck.style.left = left + "px";
+    duck.addEventListener("click", catchDuck);
+    gameContainer.appendChild(duck);
+
+    setInterval(function() {
+        var dx = (Math.random() * 2 - 1) * 200;
+        var dy = (Math.random() * 2 - 1) * 200;
+        var top = duck.offsetTop + dy;
+        var left = duck.offsetLeft + dx;
+        if (top >= 0 && top <= gameContainer.offsetHeight - 150) {
+            duck.style.top = top + "px";
+        }
+        if (left >= 0 && left <= gameContainer.offsetWidth - 150) {
+            duck.style.left = left + "px";
+        }}, 500);
+    setTimeout(function() {
+        if (document.body.contains(duck)) {
+            duck.remove();}}, 2000);}
+function catchDuck() {
+    this.style.backgroundImage = "url(game/鸭子被抓.gif)";
+    var self = this;
+    setTimeout(function() {
+        self.remove();
+    }, 500);
+    if (score > 0) {
+        score--;}
+    document.getElementById('score-display').innerText = "Score: " + score;}
+    </script>
+</head>
+<body>
+    <h1>抓住小鸡 <img src="game/鸡.png" alt=""></h1>
+    <div id="game-container">  
+  </div>
+  <div id="controls">
+    <div id="score-display">Score: 0</div>
+    <button id="reset-button" onclick="resetGame()">重置</button>
+</div>
+</body>
+</html>
